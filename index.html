@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In & Sign Up - Study Planner</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #3b82f6 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    padding: 20px;
+}
+
+.wrapper {
+    position: relative;
+    width: 420px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 40px 35px;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    color: white;
+    transition: all 0.4s ease;
+}
+
+h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 8px;
+    background: linear-gradient(to right, #ffffff, #93c5fd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    font-size: 0.95rem;
+    color: #94a3b8;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 22px;
+}
+
+.form-group i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 14px 15px 14px 45px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    outline: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: #3b82f6;
+    background: rgba(15, 23, 42, 0.8);
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+}
+
+.form-group input:focus + i {
+    color: #3b82f6;
+}
+
+.form-group input::placeholder {
+    color: #64748b;
+}
+
+.btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.switch-text {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 0.95rem;
+    color: #94a3b8;
+}
+
+.switch-text span {
+    color: #3b82f6;
+    cursor: pointer;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.switch-text span:hover {
+    color: #60a5fa;
+    text-decoration: underline;
+}
+
+.error-msg {
+    color: #f87171;
+    font-size: 0.9rem;
+    margin-top: 8px;
+    text-align: center;
+    min-height: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.error-msg.visible {
+    opacity: 1;
+}
+
+.success-toast {
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid #10b981;
+    color: #34d399;
+    padding: 12px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 20px;
+    display: none;
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Form Container switches */
+.form-container {
+    display: none;
+}
+
+.form-container.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+    <!-- Success registration notification -->
+    <div id="successToast" class="success-toast">
+        <i class="fa fa-circle-check"></i> Account created successfully! Please sign in.
+    </div>
+
+    <!-- SIGN IN CONTAINER -->
+    <div id="signinContainer" class="form-container active">
+        <h2>Welcome Back</h2>
+        <div class="subtitle">Enter your details to access your Study Planner</div>
+        
+        <form id="signinForm">
+            <div class="form-group">
+                <input type="email" id="signinEmail" placeholder="Email Address" required>
+                <i class="fa fa-envelope"></i>
+            </div>
+            <div class="form-group">
+                <input type="password" id="signinPassword" placeholder="Password" required>
+                <i class="fa fa-lock"></i>
+            </div>
+            
+            <div id="signinError" class="error-msg"></div>
+            
+            <button type="submit" class="btn">Sign In</button>
+        </form>
+        
+        <div class="switch-text">
+            Don't have an account? <span id="toSignup">Sign Up</span>
+        </div>
+    </div>
+
+    <!-- SIGN UP CONTAINER -->
+    <div id="signupContainer" class="form-container">
+        <h2>Create Account</h2>
+        <div class="subtitle">Join us to organize your study schedule effectively</div>
+        
+        <form id="signupForm">
+            <div class="form-group">
+                <input type="text" id="signupName" placeholder="Full Name" required>
+                <i class="fa fa-user"></i>
+            </div>
+            <div class="form-group">
+                <input type="email" id="signupEmail" placeholder="Email Address" required>
+                <i class="fa fa-envelope"></i>
+            </div>
+            <div class="form-group">
+                <input type="password" id="signupPassword" placeholder="Password (min 6 chars)" minlength="6" required>
+                <i class="fa fa-lock"></i>
+            </div>
+            
+            <div id="signupError" class="error-msg"></div>
+            
+            <button type="submit" class="btn">Create Account</button>
+        </form>
+        
+        <div class="switch-text">
+            Already have an account? <span id="toSignin">Sign In</span>
+        </div>
+    </div>
+</div>
+
+<script>
+// Initial static credentials
+const DEFAULT_USERS = [
+    {name: "Student", email: "student@example.com", password: "password123"}
+];
+
+// Helper to load/save users dynamically from localStorage safely
+function getRegisteredUsers() {
+    try {
+        const local = localStorage.getItem("registeredUsers");
+        return local ? JSON.parse(local) : [];
+    } catch(e) {
+        console.error(e);
+        return [];
+    }
+}
+
+function saveRegisteredUser(user) {
+    try {
+        const current = getRegisteredUsers();
+        current.push(user);
+        localStorage.setItem("registeredUsers", JSON.stringify(current));
+    } catch(e) {
+        console.error(e);
+    }
+}
+
+// Navigation variables
+const signinContainer = document.getElementById("signinContainer");
+const signupContainer = document.getElementById("signupContainer");
+const toSignupBtn = document.getElementById("toSignup");
+const toSigninBtn = document.getElementById("toSignin");
+const successToast = document.getElementById("successToast");
+
+// Toggle form panels
+toSignupBtn.addEventListener("click", () => {
+    signinContainer.classList.remove("active");
+    signupContainer.classList.add("active");
+    successToast.style.display = "none";
+    clearErrors();
+});
+
+toSigninBtn.addEventListener("click", () => {
+    signupContainer.classList.remove("active");
+    signinContainer.classList.add("active");
+    clearErrors();
+});
+
+function clearErrors() {
+    const errors = document.querySelectorAll(".error-msg");
+    errors.forEach(e => {
+        e.textContent = "";
+        e.classList.remove("visible");
+    });
+}
+
+function showError(elementId, message) {
+    const errorElem = document.getElementById(elementId);
+    errorElem.textContent = message;
+    errorElem.classList.add("visible");
+}
+
+// SIGN UP PROCESS
+const signupForm = document.getElementById("signupForm");
+signupForm.addEventListener("submit", function(e) {
+    e.preventDefault();
+    clearErrors();
+    
+    const name = document.getElementById("signupName").value.trim();
+    const email = document.getElementById("signupEmail").value.trim().toLowerCase();
+    const password = document.getElementById("signupPassword").value;
+    
+    // Check if user exists in DEFAULT_USERS or in dynamically registered users
+    const existsInDefault = DEFAULT_USERS.some(u => u.email === email);
+    const existsInRegistered = getRegisteredUsers().some(u => u.email === email);
+    
+    if (existsInDefault || existsInRegistered) {
+        showError("signupError", "Email is already registered.");
+        return;
+    }
+    
+    // Store user
+    saveRegisteredUser({ name, email, password });
+    
+    // Reset form
+    signupForm.reset();
+    
+    // Show toast and switch to sign-in
+    successToast.style.display = "block";
+    signupContainer.classList.remove("active");
+    signinContainer.classList.add("active");
+});
+
+// SIGN IN PROCESS
+const signinForm = document.getElementById("signinForm");
+signinForm.addEventListener("submit", function(e) {
+    e.preventDefault();
+    clearErrors();
+    
+    const email = document.getElementById("signinEmail").value.trim().toLowerCase();
+    const password = document.getElementById("signinPassword").value;
+    
+    // Search combined list
+    const combinedUsers = [...DEFAULT_USERS, ...getRegisteredUsers()];
+    const user = combinedUsers.find(u => u.email === email && u.password === password);
+    
+    if (user) {
+        try {
+            localStorage.setItem("isLoggedIn", "true");
+            localStorage.setItem("userName", user.name);
+        } catch(e) {
+            console.error(e);
+        }
+        window.location.replace("dashboard.html");
+    } else {
+        showError("signinError", "Invalid email or password.");
+    }
+});
+
+// Auto login bypass if already signed in
+try {
+    if (localStorage.getItem("isLoggedIn") === "true") {
+        window.location.replace("dashboard.html");
+    }
+} catch (e) {}
+</script>
+</body>
+</html>
